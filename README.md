@@ -1,1 +1,1 @@
-# model-DENİZ-KOÇ.glb
+model-deniz-koc.glb
