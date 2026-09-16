@@ -1,25 +1,37 @@
 <!doctype html>
 <html lang="tr">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Deniz Koç AR</title>
 
-  <script type="module"
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <title>3D AR Model</title>
+
+  <!-- Google Model Viewer -->
+  <script
+    type="module"
     src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
   </script>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
+      padding: 0;
       width: 100%;
       height: 100%;
+      overflow: hidden;
       background: #000;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     model-viewer {
@@ -28,72 +40,259 @@
       background: #111;
     }
 
-    #ar-button {
-      position: absolute;
-      left: 50%;
-      bottom: 40px;
-      transform: translateX(-50%);
-      border: 0;
-      border-radius: 30px;
-      padding: 16px 28px;
-      background: white;
-      color: black;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(0,0,0,.35);
-    }
+    /* Üst Bilgi */
 
     .info {
       position: absolute;
-      top: 25px;
+      top: max(25px, env(safe-area-inset-top));
       left: 20px;
       right: 20px;
+
       text-align: center;
       color: white;
+
       pointer-events: none;
-      text-shadow: 0 2px 8px black;
+
+      text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.9);
     }
 
     .info strong {
       display: block;
+
+      margin-bottom: 6px;
+
       font-size: 20px;
-      margin-bottom: 5px;
+      font-weight: 700;
     }
 
     .info span {
       font-size: 14px;
-      opacity: .8;
+      opacity: 0.8;
     }
+
+    /* AR Butonu */
+
+    #ar-button {
+      position: absolute;
+
+      left: 50%;
+
+      bottom: max(
+        40px,
+        calc(env(safe-area-inset-bottom) + 20px)
+      );
+
+      transform: translateX(-50%);
+
+      min-width: 180px;
+
+      padding: 16px 28px;
+
+      border: none;
+      border-radius: 40px;
+
+      background: #fff;
+      color: #000;
+
+      font-size: 16px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Model yükleme göstergesi */
+
+    .progress-bar {
+      display: block;
+
+      width: 33%;
+      height: 5px;
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      transform: translate3d(-50%, -50%, 0);
+
+      border-radius: 25px;
+
+      background: rgba(255, 255, 255, 0.2);
+
+      overflow: hidden;
+    }
+
+    .progress-bar.hide {
+      visibility: hidden;
+      transition: visibility 0.3s;
+    }
+
+    .update-bar {
+      background: white;
+
+      width: 0%;
+      height: 100%;
+
+      border-radius: 25px;
+
+      transition: width 0.2s;
+    }
+
   </style>
 </head>
+
 
 <body>
 
   <model-viewer
-    src="model-deniz-koc.glb"
-    alt="Deniz Koç 3D Model"
+
+    id="ar-model"
+
+    src="girl_tv.glb"
+
+    alt="Animated 3D AR Model"
+
     ar
+
     ar-modes="webxr scene-viewer quick-look"
+
     ar-scale="fixed"
+
     camera-controls
+
     autoplay
+
     animation-crossfade-duration="0"
+
     shadow-intensity="1"
+
+    shadow-softness="1"
+
     exposure="1"
+
     environment-image="neutral"
-    interaction-prompt="auto">
+
+    interaction-prompt="auto"
+
+    loading="eager"
+
+    reveal="auto"
+
+    touch-action="pan-y"
+
+  >
+
+    <!-- Üst Bilgi -->
 
     <div class="info">
-      <strong>Deniz Koç</strong>
-      <span>Modeli gerçek ortamında görmek için AR'ı başlat.</span>
+
+      <strong>3D AR MODEL</strong>
+
+      <span>
+        Modeli gerçek ortamında görmek için AR'ı başlat.
+      </span>
+
     </div>
 
-    <button slot="ar-button" id="ar-button">
+
+    <!-- AR Butonu -->
+
+    <button
+      slot="ar-button"
+      id="ar-button"
+    >
       AR'DA GÖR
     </button>
 
+
+    <!-- Loading -->
+
+    <div
+      slot="progress-bar"
+      class="progress-bar"
+    >
+
+      <div class="update-bar"></div>
+
+    </div>
+
   </model-viewer>
 
+
+  <script>
+
+    const modelViewer =
+      document.querySelector("#ar-model");
+
+    const progressBar =
+      document.querySelector(".progress-bar");
+
+    const updateBar =
+      document.querySelector(".update-bar");
+
+
+    /* Model yükleme yüzdesi */
+
+    modelViewer.addEventListener(
+      "progress",
+      (event) => {
+
+        const progress =
+          event.detail.totalProgress;
+
+        updateBar.style.width =
+          `${progress * 100}%`;
+
+        if (progress === 1) {
+
+          progressBar.classList.add("hide");
+
+        } else {
+
+          progressBar.classList.remove("hide");
+
+        }
+
+      }
+    );
+
+
+    /* Model yüklendiğinde animasyonu başlat */
+
+    modelViewer.addEventListener(
+      "load",
+      () => {
+
+        modelViewer.play();
+
+      }
+    );
+
+
+    /* AR'dan geri dönülürse animasyonu devam ettir */
+
+    modelViewer.addEventListener(
+      "ar-status",
+      (event) => {
+
+        if (
+          event.detail.status ===
+          "not-presenting"
+        ) {
+
+          modelViewer.play();
+
+        }
+
+      }
+    );
+
+  </script>
+
 </body>
+
 </html>
