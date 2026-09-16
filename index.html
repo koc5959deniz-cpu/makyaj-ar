@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Makyaj AR</title>
+
+  <script type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100vh;
+      background: #111;
+    }
+
+    #ar-button {
+      position: absolute;
+      left: 50%;
+      bottom: 40px;
+      transform: translateX(-50%);
+      border: 0;
+      border-radius: 30px;
+      padding: 16px 28px;
+      background: white;
+      color: black;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    }
+
+    .info {
+      position: absolute;
+      top: 25px;
+      left: 20px;
+      right: 20px;
+      text-align: center;
+      color: white;
+      pointer-events: none;
+      text-shadow: 0 2px 8px black;
+    }
+
+    .info strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .info span {
+      font-size: 14px;
+      opacity: .8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <model-viewer
+    src="makyaj%20glb.glb"
+    alt="Makyaj 3D Model"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-scale="fixed"
+    camera-controls
+    auto-rotate
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral"
+    interaction-prompt="auto">
+
+    <div class="info">
+      <strong>3D Model</strong>
+      <span>Modeli gerçek ortamında görmek için AR'ı başlat.</span>
+    </div>
+
+    <button slot="ar-button" id="ar-button">
+      AR'DA GÖR
+    </button>
+
+  </model-viewer>
+
+</body>
+</html>
